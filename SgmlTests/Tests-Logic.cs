@@ -81,7 +81,10 @@ namespace SGMLTests {
 
         private static void ReadTest(string name, out string before, out string after) {
             var assembly = typeof(Tests).Assembly;
-           
+            if (assembly.FullName is null)
+            {
+                throw new NullReferenceException("Tests Assembly FullName is null (somehow?).");
+            }
             var stream = assembly.GetManifestResourceStream(assembly.FullName.Split(',')[0] + ".Resources." + name);
             if(stream == null) {
                 throw new FileNotFoundException("unable to load requested resource: " + name);
@@ -95,9 +98,9 @@ namespace SGMLTests {
 
         private static SgmlDtd LoadDtd(string docType, string name)
         {
-            using (Stream stream = typeof(SGMLTests.Tests).Assembly.GetManifestResourceStream("SgmlTests." + name))
+            using (Stream stream = typeof(Tests).Assembly.GetManifestResourceStream("SgmlTests." + name))
             {
-                SgmlDtd dtd = SgmlDtd.Parse(null, System.IO.Path.GetFileNameWithoutExtension(name), new StreamReader(stream), "", new NameTable(), 
+                SgmlDtd dtd = SgmlDtd.Parse(null, Path.GetFileNameWithoutExtension(name), new StreamReader(stream), "", new NameTable(), 
                     new DesktopEntityResolver());
                 dtd.Name = docType;
                 return dtd;
@@ -134,7 +137,7 @@ namespace SGMLTests {
             xmlTextWriter.Close();
 
             // reproduce the parsed document
-            var actual = stringWriter.ToString();
+            string actual = stringWriter.ToString();
 
             // ensure that output can be parsed again
             try {

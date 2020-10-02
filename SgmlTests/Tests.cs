@@ -9,7 +9,6 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
@@ -371,7 +370,7 @@ namespace SGMLTests {
             };
 
             // test
-            var element = System.Xml.Linq.XElement.Load(reader);
+            var element = XElement.Load(reader);
             string value = element.Value;
             Assert.IsFalse(string.IsNullOrEmpty(value), "element has no value");
             Assert.AreNotEqual((char)65535, value[value.Length - 1], "unexpected -1 as last char");
